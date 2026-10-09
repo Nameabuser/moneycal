@@ -17,7 +17,8 @@ function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt
 function f(n){return '\u20b9'+Number(n).toLocaleString('en-IN')}
 function ym(d){return d.slice(0,7)}
 function tg(){T=T=='dark'?'light':'dark';localStorage.setItem('t',T);R()}
-function R(){document.documentElement.setAttribute('data-t',T);var h='',now=new Date().toISOString().slice(0,10);
+function today(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function R(){document.documentElement.setAttribute('data-t',T);var h='',now=today();
 for(var i=0;i<4;i++)document.getElementById('n'+i).className=i==P?'a':'';
 if(P==0){var mo=D.s.filter(x=>ym(x.d)==ym(now)),tm=mo.reduce((a,x)=>a+x.a,0),ow=D.o.filter(x=>!x.p&&x.k=='they').reduce((a,x)=>a+x.a,0),oy=D.o.filter(x=>!x.p&&x.k=='me').reduce((a,x)=>a+x.a,0);
 var em=D.e.filter(x=>ym(x.d)==ym(now)).reduce((a,x)=>a+x.a,0),ed=D.e.filter(x=>x.d==now).reduce((a,x)=>a+x.a,0);
