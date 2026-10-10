@@ -1,0 +1,22 @@
+name: fixsafe
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace index.html with the uploaded copy
+        run: |
+          set -e
+          if [ ! -f 1-index.html ]; then echo "nothing to do"; exit 0; fi
+          git mv -f 1-index.html index.html
+          git rm -f --ignore-unmatch .github/workflows/*fixsafe.yml
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git commit -m "Fix iPhone safe-area: status bar cover, Dark mode button overlap, bottom spacing"
+          git push
