@@ -11,7 +11,7 @@ return {s:x.s,o:x.o,p:x.p===undefined?[]:x.p,e:x.e===undefined?[]:x.e}
 }
 var D={s:[],o:[],p:[],e:[]},P=0,opn=0,loadFailed=false;var T='dark';
 try{var saved=localStorage.getItem('m');if(saved!==null)D=data(JSON.parse(saved));T=localStorage.getItem('t')||'dark'}catch(e){loadFailed=true;alert('Saved data could not be loaded. It has not been changed. Restore a valid backup before making changes.')}
-function sv(){if(loadFailed){alert('Saved data is protected. Restore a valid backup before making changes.');return}localStorage.setItem('m',JSON.stringify(D));R()}
+function sv(){if(loadFailed){alert('Saved data is protected. Restore a valid backup before making changes.');return}localStorage.setItem('m',JSON.stringify(D));touch();R()}
 function go(p){P=p;R()}
 function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function f(n){return '\u20b9'+Number(n).toLocaleString('en-IN')}
@@ -24,7 +24,7 @@ if(P==0){var mo=D.s.filter(x=>ym(x.d)==ym(now)),tm=mo.reduce((a,x)=>a+x.a,0),ow=
 var em=D.e.filter(x=>ym(x.d)==ym(now)).reduce((a,x)=>a+x.a,0),ed=D.e.filter(x=>x.d==now).reduce((a,x)=>a+x.a,0);
 h+='<button class=th onclick=tg()>'+(T=='dark'?'Light':'Dark')+' mode</button><h2>Overview</h2><div class=c><small>Earned today</small><div class="big g">'+f(ed)+'</div></div><div class=c><small>Earned this month</small><div class="big g">'+f(em)+'</div></div><div class=c><small>Spent this month</small><div class=big>'+f(tm)+'</div></div><div class=c><small>Owed to you</small><div class="big g">'+f(ow)+'</div></div><div class=c><small>You owe</small><div class="big b">'+f(oy)+'</div></div>';
 var cat=Object.create(null);mo.forEach(x=>cat[x.c]=(cat[x.c]||0)+x.a);var ks=Object.keys(cat).sort((a,b)=>cat[b]-cat[a]);
-h+='<h2>This month by category</h2><div class=c>';if(!ks.length)h+='<small>Nothing yet</small>';ks.forEach(k=>{var w=Math.round(cat[k]/tm*100);h+='<div style="margin:8px 0"><div class=r style="border:0;padding:0"><span>'+esc(k)+'</span><span>'+f(cat[k])+'</span></div><div style="background:var(--in);border-radius:6px;height:8px"><div style="background:#4f7cff;width:'+w+'%;height:8px;border-radius:6px"></div></div></div>'});h+='</div><h2>Backup</h2><div class=c><button onclick=bk()>Copy backup</button><button onclick=rs() style="background:var(--in);color:var(--tx)">Restore from backup</button><small>Copy backup, then paste it into Notes to keep it safe.</small></div>'}
+h+='<h2>This month by category</h2><div class=c>';if(!ks.length)h+='<small>Nothing yet</small>';ks.forEach(k=>{var w=Math.round(cat[k]/tm*100);h+='<div style="margin:8px 0"><div class=r style="border:0;padding:0"><span>'+esc(k)+'</span><span>'+f(cat[k])+'</span></div><div style="background:var(--in);border-radius:6px;height:8px"><div style="background:#4f7cff;width:'+w+'%;height:8px;border-radius:6px"></div></div></div>'});h+='</div><h2>Backup</h2><div class=c><button onclick=bk()>Copy backup</button><button onclick=rs() style="background:var(--in);color:var(--tx)">Restore from backup</button><small>Copy backup, then paste it into Notes to keep it safe.</small></div><h2>Sync</h2><div class=c id=sy>'+syncH()+'</div>'}
 if(P==1){h+='<h2>Add spending</h2><div class=c><input id=a type=number inputmode=decimal placeholder="Amount"><input id=w placeholder="Where (e.g. Canteen)"><select id=c><option>Food</option><option>Travel</option><option>Shopping</option><option>Bills</option><option>Fun</option><option>Study</option><option>Other</option></select><input id=d type=date value="'+now+'"><button onclick=addS()>Add</button></div><h2>History</h2><div class=c>';
 D.s.slice().reverse().forEach(x=>{h+='<div class=r><div>'+esc(x.w)+' <small>'+esc(x.c)+' \u00b7 '+x.d+'</small></div><div>'+f(x.a)+'<button class=x onclick=delS('+x.i+')>\u2715</button></div></div>'});if(!D.s.length)h+='<small>Nothing yet</small>';h+='</div>'}
 if(P==3){h+='<h2>Add earnings</h2><div class=c><input id=a type=number inputmode=decimal placeholder="Amount"><input id=w placeholder="From (e.g. Work)"><select id=c><option>Salary</option><option>Pocket money</option><option>Gift</option><option>Freelance</option><option>Other</option></select><input id=d type=date value="'+now+'"><button onclick=addE()>Add</button></div><h2>History</h2><div class=c>';
@@ -32,7 +32,7 @@ D.e.slice().reverse().forEach(x=>{h+='<div class=r><div>'+esc(x.w)+' <small>'+es
 if(P==2){h+='<h2>Add</h2><div class=c><select id=k><option value=they>Someone owes me</option><option value=me>I owe someone</option></select><input id=a type=number inputmode=decimal placeholder="Amount"><input id=w placeholder="Name"><input id=nt placeholder="Note (optional)"><button onclick=addO()>Add</button></div><h2>Regular people</h2><div class=c><small>Tap a name to fill it in</small><div>';D.p.forEach((n,i)=>{h+='<button class=ch onclick=pick('+i+')>'+esc(n)+'</button>'});h+='</div><input id=pn placeholder="New regular name"><button onclick=addP()>Save name</button>';D.p.forEach((n,i)=>{h+='<div class=r><span>'+esc(n)+'</span><button class=x onclick=delP('+i+')>\u2715</button></div>'});h+='</div>';
 ['they','me'].forEach(k=>{h+='<h2>'+(k=='they'?'Owed to you':'You owe')+'</h2><div class=c>';var l=D.o.filter(x=>x.k==k&&!x.p);l.forEach(x=>{var pd=x.pd||0,rm=x.a-pd;h+='<div class=r'+(opn==x.i?' style="border-bottom:0;padding-bottom:2px"':'')+'><div>'+esc(x.w)+' <small>'+esc(x.n||'')+'</small>'+(pd?'<br><small>'+f(pd)+' paid of '+f(x.a)+'</small>':'')+'</div><div class="'+(k=='they'?'g':'b')+'">'+f(rm)+'<button class=x onclick=delO('+x.i+')>\u2715</button></div></div>';if(pd)h+='<div class=pr><div style="width:'+Math.min(100,Math.round(pd/x.a*100))+'%"></div></div>';if(opn==x.i){h+='<div class=pp><input id=pp'+x.i+' type=number inputmode=decimal min=0 step=any placeholder="Amount paid" autofocus><button onclick=poff('+x.i+')>Add</button></div><div style="border-bottom:1px solid var(--bd);padding-bottom:6px;margin-bottom:4px"><button class=x onclick=pay('+x.i+')>Mark fully paid</button></div>'}else{h+='<div style="margin:0 0 6px"><button class=x style="color:#4f7cff" onclick=tpg('+x.i+')>Pay off</button></div>'}});if(!l.length)h+='<small>None</small>';h+='</div>'})}
 document.getElementById('app').innerHTML=h}
-function saveE(e){if(loadFailed){alert('Saved data is protected. Restore a valid backup before making changes.');return}var x={s:D.s,o:D.o,p:D.p,e:e};try{localStorage.setItem('m',JSON.stringify(x))}catch(err){alert('Could not save earnings. Your current data has not been changed.');return}D=x;R()}
+function saveE(e){if(loadFailed){alert('Saved data is protected. Restore a valid backup before making changes.');return}var x={s:D.s,o:D.o,p:D.p,e:e};try{localStorage.setItem('m',JSON.stringify(x))}catch(err){alert('Could not save earnings. Your current data has not been changed.');return}D=x;touch();R()}
 function addE(){var a=+document.getElementById('a').value,w=document.getElementById('w').value||'-';if(!Number.isFinite(a)||a<=0)return;var x={i:Date.now(),a:a,w:w,c:document.getElementById('c').value,d:document.getElementById('d').value};try{data({s:D.s,o:D.o,p:D.p,e:[x]})}catch(err){alert('Enter a valid date.');return}saveE(D.e.concat(x))}
 function delE(i){saveE(D.e.filter(x=>x.i!=i))}
 function addS(){var a=+document.getElementById('a').value,w=document.getElementById('w').value||'-';if(!a)return;D.s.push({i:Date.now(),a:a,w:w,c:document.getElementById('c').value,d:document.getElementById('d').value});sv()}
@@ -42,7 +42,7 @@ function bk(){if(loadFailed){alert('Saved data could not be loaded. Do not repla
 function rs(){var t=prompt('Paste your backup here');if(!t)return;var x;try{x=data(JSON.parse(t))}catch(e){alert('That backup text is not valid. Your saved data has not been changed.');return}
 if(!confirm('Replace your current data with this backup?'))return;
 try{localStorage.setItem('m',JSON.stringify(x))}catch(e){alert('Could not save the backup. Your current data has not been changed.');return}
-D=x;loadFailed=false;R();alert('Restored')}
+D=x;loadFailed=false;touch();R();alert('Restored')}
 function pick(i){document.getElementById('w').value=D.p[i]}
 function addP(){var n=document.getElementById('pn').value.trim();if(!n)return;D.p.push(n);sv()}
 function delP(i){D.p.splice(i,1);sv()}
@@ -50,5 +50,29 @@ function pay(i){D.o.forEach(x=>{if(x.i==i)x.p=1});sv()}
 function poff(i){var el=document.getElementById('pp'+i);if(!el)return;var p=+el.value;if(!Number.isFinite(p)||p<=0)return;D.o.forEach(x=>{if(x.i==i){var pd=Math.round(((x.pd||0)+p)*100)/100;if(pd>=x.a){x.pd=x.a;x.p=1}else x.pd=pd}});opn=0;sv()}
 function delO(i){D.o=D.o.filter(x=>x.i!=i);sv()}
 function tpg(i){opn=opn==i?0:i;R();if(opn){var el=document.getElementById('pp'+i);if(el)el.focus()}}
+
+var CFG={apiKey:"AIzaSyAJ8Z96ko2U53XAAArkLCFDn3lyBaze_28",authDomain:"moneycal-sync.firebaseapp.com",projectId:"moneycal-sync",storageBucket:"moneycal-sync.firebasestorage.app",messagingSenderId:"33772045225",appId:"1:33772045225:web:5d8fdc8ebadeb30bf87ab8"};
+var FB=null,US=null,UNS=null,SY='',pt=0;
+function mt(){return +localStorage.getItem('mt')||0}
+function touch(){localStorage.setItem('mt',String(Date.now()));push()}
+function syncH(){if(US)return '<div>Signed in as '+esc(US.email||'')+'</div><small id=sm>'+esc(SY)+'</small><button id=so onclick=sOut() style="background:var(--in);color:var(--tx)">Sign out</button>';
+return '<small>Sign in on every device to keep your data the same.</small><input id=se type=email autocomplete=username placeholder="Email"><input id=sp type=password autocomplete=current-password placeholder="Password"><button onclick=sIn(0)>Sign in</button><button onclick=sIn(1) style="background:var(--in);color:var(--tx)">Create account</button><small id=sm>'+esc(SY)+'</small>'}
+function ui(){var m=document.getElementById('sm'),so=document.getElementById('so');if(P==0&&document.getElementById('sy')&&(!!US)!=(!!so)){R();return}if(m)m.textContent=SY}
+async function fb(){if(FB)return FB;var b='https://www.gstatic.com/firebasejs/10.14.1/';var a=await import(b+'firebase-app.js'),u=await import(b+'firebase-auth.js'),s=await import(b+'firebase-firestore.js');var app=a.initializeApp(CFG);FB={u:u,s:s,auth:u.getAuth(app),db:s.getFirestore(app)};FB.u.onAuthStateChanged(FB.auth,function(x){if(x)attach(x);else{US=null;if(UNS)UNS();UNS=null;SY=''}ui()});return FB}
+function push(){if(!US||loadFailed||!FB)return;clearTimeout(pt);pt=setTimeout(async function(){SY='Syncing...';ui();try{await FB.s.setDoc(FB.s.doc(FB.db,'users',US.uid),{d:JSON.stringify(D),t:mt()});SY='Synced';}catch(e){SY='Could not sync. Will retry when you change something.'}ui()},500)}
+function pk(o,v){if(o.p||v.p)return o.p?o:v;return (v.pd||0)>(o.pd||0)?v:o}
+function mg(a,b){var u=function(x,y,o){var m=new Map();x.concat(y).forEach(function(v){var q=m.get(v.i);m.set(v.i,q?(o?pk(q,v):q):v)});return Array.from(m.values()).sort(function(p,q){return p.i-q.i})};
+return {s:u(a.s,b.s),o:u(a.o,b.o,1),e:u(a.e,b.e),p:Array.from(new Set(a.p.concat(b.p)))}}
+function attach(u){US=u;if(UNS)UNS();UNS=FB.s.onSnapshot(FB.s.doc(FB.db,'users',u.uid),function(snap){if(loadFailed)return;
+if(!snap.exists()){if(snap.metadata.fromCache)return;localStorage.setItem('sl',u.uid);touch();SY='Synced';ui();return}
+var c=snap.data(),cd;try{cd=data(JSON.parse(c.d))}catch(e){SY='Cloud data could not be read';ui();return}
+if(localStorage.getItem('sl')!=u.uid){D=mg(D,cd);localStorage.setItem('m',JSON.stringify(D));localStorage.setItem('sl',u.uid);touch();SY='Synced';R();return}
+if(c.t>mt()){D=cd;localStorage.setItem('m',JSON.stringify(D));localStorage.setItem('mt',String(c.t));SY='Synced';R()}
+else if(c.t<mt()){push()}else{SY='Synced';ui()}},function(){SY='Offline. Will sync when online.';ui()});ui()}
+async function sIn(c){var e=document.getElementById('se').value.trim(),p=document.getElementById('sp').value;if(!e||!p){SY='Enter email and password';ui();return}SY='Please wait...';ui();
+try{await fb();await (c?FB.u.createUserWithEmailAndPassword:FB.u.signInWithEmailAndPassword)(FB.auth,e,p)}catch(err){var k=err&&err.code||'';SY=k.indexOf('invalid-credential')>=0||k.indexOf('wrong-password')>=0||k.indexOf('user-not-found')>=0?'Wrong email or password':k.indexOf('email-already')>=0?'Account exists. Tap Sign in.':k.indexOf('weak-password')>=0?'Password needs 6 or more characters':k.indexOf('invalid-email')>=0?'Enter a valid email':k.indexOf('network')>=0||!k?'No connection. Try again online.':k;ui()}}
+async function sOut(){try{await FB.u.signOut(FB.auth)}catch(e){}}
+fb().catch(function(){});
 R()
 </script></body></html>
+
